@@ -16,9 +16,6 @@ class Card:
 class Deck:
     def __init__(self):
         self.cards = []
-        self.build()
-
-    def build(self):
         for suit in suits:
             for rank in ranks:
                 self.cards.append(Card(suit, rank))
@@ -32,6 +29,7 @@ class Deck:
 
     def deal_one(self):
         return self.cards.pop()
+        
     
 #player class
 class Player:
@@ -39,7 +37,7 @@ class Player:
         self.name=name
         self.all_cards=[]
     def deal(self):
-        return self.all_cards.pop()
+        return self.all_cards.pop(0)
     def add(self,newcard):
         if isinstance(newcard,list):
             self.all_cards.extend(newcard)
@@ -48,19 +46,46 @@ class Player:
     def __str__(self):
         return f'the player {self.name} has {len(self.all_cards)} cards'
 
-#game logic
 deck=Deck()
-#deck.show()
-n=len(deck.cards)
-#print(n//2)
-player1=Player('One')
-player2=Player('Two')
 deck.shuffle()
-i=0
-for i in range(26):
+player1=Player('one')
+player2=Player('two')
+n=len(deck.cards)
+for i in range(n//2):
     player1.add(deck.deal_one())
+    player2.add(deck.deal_one())
+print(player1)
+print(player2)
+game_on=True
+while game_on:
+    
+    if len(player1.all_cards)==0:
+        print('Player 2 win!')
+        game_on=False
+        break
+    if len(player2.all_cards)==0:
+        print('Player 1 win!')
+        game_on=False
+        break
+    player1_cards=[]
+    player2_cards=[]
+    player1_cards.append(player1.deal())
+    player2_cards.append(player2.deal())
+    at_war=True
+    while at_war:
+        
+        if player1_cards[-1].value>player2_cards[-1].value:
+            player1.add(player1_cards)
+            player1.add(player2_cards)
+            at_war=False
+        elif player2_cards[-1].value>player1_cards[-1].value:
+            player2.add(player1_cards)
+            player2.add(player2_cards)
+            at_war=False
+        
+            
 
-print(*[cards.show() for cards in player1.all_cards])
+
 
 
 
