@@ -1,92 +1,133 @@
+# importing random module for shuffling
 import random
+import pdb
+
+# GLOBAL VARIABLES
 suits = ('Hearts', 'Diamonds', 'Spades', 'Clubs')
 ranks = ('Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King', 'Ace')
-values = {'Two':2, 'Three':3, 'Four':4, 'Five':5, 'Six':6, 'Seven':7, 'Eight':8, 
-            'Nine':9, 'Ten':10, 'Jack':11, 'Queen':12, 'King':13, 'Ace':14}
-#create card class
-class Card:
-    def __init__(self, suit, ranks):
-        self.suit = suit
-        self.rank = ranks
-        self.value = values[ranks]
-    def show(self):
-        print('{} of {}'.format(self.rank, self.suit))
+values = {'Two':2, 'Three':3, 'Four':4, 'Five':5, 'Six':6, 'Seven':7, 'Eight':8,'Nine':9, 'Ten':10, 'Jack':11, 'Queen':12, 'King':13, 'Ace':14}
 
-#create Deck class
+#Card Class
+class Card:
+    def __init__(self,suit, rank):
+        self.suit = suit
+        self.rank = rank
+        self.value = values[rank]
+    
+    def __str__(self) -> str:
+        return f'{self.rank} of {self.suit}'
+        
+# Deck Class
 class Deck:
+
     def __init__(self):
-        self.cards = []
+        self.cards=[]
         for suit in suits:
             for rank in ranks:
-                self.cards.append(Card(suit, rank))
+                self.cards.append(Card(suit,rank))
 
-    def show(self):
-        for card in self.cards:
-            card.show()
-    
+
     def shuffle(self):
-        random.shuffle(self.cards)
+        random.shuffle(self.cards) 
 
     def deal_one(self):
-        return self.cards.pop()
-        
-    
-#player class
-class Player:
-    def __init__(self,name):
-        self.name=name
-        self.all_cards=[]
-    def deal(self):
-        return self.all_cards.pop(0)
-    def add(self,newcard):
-        if isinstance(newcard,list):
-            self.all_cards.extend(newcard)
-        else:
-            self.all_cards.append(newcard)
-    def __str__(self):
-        return f'the player {self.name} has {len(self.all_cards)} cards'
+        return self.cards.pop()   
 
-deck=Deck()
-deck.shuffle()
-player1=Player('one')
-player2=Player('two')
-n=len(deck.cards)
-for i in range(n//2):
-    player1.add(deck.deal_one())
-    player2.add(deck.deal_one())
-print(player1)
-print(player2)
-game_on=True
-while game_on:
+
+# Player class
+class Player:
+
+    def __init__(self,name):
+        self.name = name
+        self.all_cards=[]
     
-    if len(player1.all_cards)==0:
-        print('Player 2 win!')
+    def remove_one(self):
+        return self.all_cards.pop(0)
+    
+    def add_cards(self, new_cards):
+        if type(new_cards)==type([]):
+            self.all_cards.extend(new_cards)
+        else:
+            self.all_cards.append(new_cards)
+    
+    def __str__(self):
+        return f'Player {self.name} has {len(self.all_cards)} cards.'
+
+
+# GAME LOGIC
+player_one=Player('One')
+player_two=Player('Two')
+
+#creating new deck
+new_deck=Deck()
+new_deck.shuffle()
+
+# distributing equal number of cards in both the players
+for i in range(26):
+    player_one.add_cards(new_deck.deal_one())
+    player_two.add_cards(new_deck.deal_one())
+
+# statrting game
+game_on=True
+round=0
+
+while game_on:
+    round+=1
+    print(f'Round {round}')
+
+    if len(player_one.all_cards)==0:
+        print('Player One out of cards')
+        print('Player Two wins!')
         game_on=False
         break
-    if len(player2.all_cards)==0:
-        print('Player 1 win!')
+    if len(player_two.all_cards)==0:
+        print('Player Two out of cards')
+        print('Player One wins!')
         game_on=False
         break
-    player1_cards=[]
-    player2_cards=[]
-    player1_cards.append(player1.deal())
-    player2_cards.append(player2.deal())
+
+    # start next round
+    player_one_cards=[]
+    player_one_cards.append(player_one.remove_one())
+    player_two_cards=[]
+    player_two_cards.append(player_two.remove_one())
+
+    # while at war
     at_war=True
     while at_war:
-        
-        if player1_cards[-1].value>player2_cards[-1].value:
-            player1.add(player1_cards)
-            player1.add(player2_cards)
+        # first condition
+        if player_one_cards[-1].value > player_two_cards[-1].value:
+            player_one.add_cards(player_one_cards)
+            player_one.add_cards(player_two_cards)
             at_war=False
-        elif player2_cards[-1].value>player1_cards[-1].value:
-            player2.add(player1_cards)
-            player2.add(player2_cards)
-            at_war=False
-        
             
+        
+        #second Condition
+        elif player_one_cards[-1].value < player_two_cards[-1].value:
+            player_two.add_cards(player_one_cards)
+            player_two.add_cards(player_two_cards)
+            at_war=False
+    
 
+        #third condition
+        else:
+            
+            print('WAR!')
+            if len(player_one.all_cards) < 5:
+                print('Player One out of cards and cannot make the move!')
+                print('Player two wins!')
+                game_on=False
+                break
 
+            elif len(player_two.all_cards) < 5:
+                print('Player Two out of cards and cannot make the move!')
+                print('Player One wins!')
+                game_on=False
+                break
 
-
+            else:
+                for _ in range(5):
+                    player_one_cards.append(player_one.remove_one())
+                    player_two_cards.append(player_two.remove_one())
 
 
