@@ -113,13 +113,13 @@ while game_on:
         else:
             
             print('WAR!')
-            if len(player_one.all_cards) < 5:
+            if len(player_one_cards) < 5:
                 print('Player One out of cards and cannot make the move!')
                 print('Player two wins!')
                 game_on=False
                 break
 
-            elif len(player_two.all_cards) < 5:
+            elif len(player_two_cards) < 5:
                 print('Player Two out of cards and cannot make the move!')
                 print('Player One wins!')
                 game_on=False
