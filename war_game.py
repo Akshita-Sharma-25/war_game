@@ -42,7 +42,7 @@ class Player:
         self.all_cards=[]
     
     def remove_one(self):
-        return self.all_cards.pop(0)
+        return self.all_cards.pop()
     
     def add_cards(self, new_cards):
         if type(new_cards)==type([]):
@@ -113,13 +113,13 @@ while game_on:
         else:
             
             print('WAR!')
-            if len(player_one_cards) < 5:
+            if len(player_one.all_cards) < 5:
                 print('Player One out of cards and cannot make the move!')
                 print('Player two wins!')
                 game_on=False
                 break
 
-            elif len(player_two_cards) < 5:
+            elif len(player_two.all_cards) < 5:
                 print('Player Two out of cards and cannot make the move!')
                 print('Player One wins!')
                 game_on=False
